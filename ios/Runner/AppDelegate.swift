@@ -14,6 +14,20 @@ import Flutter
         
         methodChannel.setMethodCallHandler({(call: FlutterMethodCall, result: FlutterResult)-> Void in
             if call.method == "version" {
+                //let numbers: [Int] = call.arguments as! [Int]
+//                for item in numbers {
+//                      print("🤓 number \(item)")
+//                }
+                
+                let data: [String:Any] =  call.arguments  as! [String:Any]
+                let name: String = data["name"] as! String
+                let lastname: String =  data["lastname"] as! String
+                let age: Int =  data["age"] as! Int
+                
+                print("name \(name)")
+                print("lastname \(lastname)")
+                print("age \(age)")
+              
                 let version =  UIDevice().systemVersion
                 result("iOS \(version)")
             }else{
