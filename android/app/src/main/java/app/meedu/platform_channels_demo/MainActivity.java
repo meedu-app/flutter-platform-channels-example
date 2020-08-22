@@ -1,5 +1,6 @@
 package app.meedu.platform_channels_demo;
 
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
@@ -13,15 +14,17 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivity extends FlutterActivity {
+    private Geolocation geolocation;
+
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-      
         BinaryMessenger messenger = flutterEngine.getDartExecutor().getBinaryMessenger();
         MethodChannel methodChannel = new MethodChannel(messenger, "app.meedu/my_first_platform_channel");
-        new Geolocation(this, messenger);
+        this.geolocation = new Geolocation(this, flutterEngine);
         methodChannel.setMethodCallHandler((MethodCall call, MethodChannel.Result result) -> {
             if (call.method.equals("version")) {
 //                int number = (int) call.arguments;
@@ -43,6 +46,7 @@ public class MainActivity extends FlutterActivity {
                 result.notImplemented();
             }
         });
+
     }
 
 
@@ -50,5 +54,11 @@ public class MainActivity extends FlutterActivity {
         int sdkVersion = Build.VERSION.SDK_INT;
         String release = Build.VERSION.RELEASE;
         return "Android version: " + sdkVersion + " (" + release + ")";
+    }
+
+    @Override
+    protected void onDestroy() {
+        this.geolocation.stop();
+        super.onDestroy();
     }
 }

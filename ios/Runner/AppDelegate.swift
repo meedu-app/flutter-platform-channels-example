@@ -3,6 +3,8 @@ import Flutter
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
+    
+    var geolocation:Geolocation!
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -12,7 +14,7 @@ import Flutter
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
         let methodChannel = FlutterMethodChannel(name: "app.meedu/my_first_platform_channel", binaryMessenger: controller.binaryMessenger)
         
-        Geolocation(messenger: controller.binaryMessenger)
+        self.geolocation =  Geolocation(messenger: controller.binaryMessenger)
         
         methodChannel.setMethodCallHandler({(call: FlutterMethodCall, result: FlutterResult)-> Void in
             if call.method == "version" {
@@ -38,5 +40,10 @@ import Flutter
         })
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    
+    override func applicationWillTerminate(_ application: UIApplication) {
+        self.geolocation.stop()
     }
 }

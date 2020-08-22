@@ -2,10 +2,21 @@
 import Foundation
 import CoreLocation
 
-class Geolocation: NSObject, CLLocationManagerDelegate {
+class Geolocation: NSObject, CLLocationManagerDelegate, FlutterStreamHandler {
+    
+    func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        self.events = events
+      return nil
+    }
+    
+    func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        return nil
+    }
+    
     
     let manager: CLLocationManager = CLLocationManager()
     var flutterResult: FlutterResult?
+    var events: FlutterEventSink?
     
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -16,10 +27,22 @@ class Geolocation: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let coord:CLLocationCoordinate2D = location.coordinate
+            print("🥶 \(coord.latitude),\(coord.longitude)")
+            if self.events != nil {
+                self.events!(["lat":coord.latitude,"lng":coord.longitude])
+            }
+        }
+    }
+    
     init(messenger: FlutterBinaryMessenger) {
         super.init()
         let channel = FlutterMethodChannel(name: "app.meedu/geolocation", binaryMessenger: messenger)
+        let eventChannel = FlutterEventChannel(name: "app.meedu/geolocation-listener", binaryMessenger: messenger)
         channel.setMethodCallHandler(self.callHandler)
+        eventChannel.setStreamHandler(self)
         self.manager.delegate = self
     }
     
@@ -47,6 +70,12 @@ class Geolocation: NSObject, CLLocationManagerDelegate {
             
              
             }
+        case "start":
+            self.start()
+            result(nil)
+        case "stop":
+            self.stop()
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -77,6 +106,14 @@ class Geolocation: NSObject, CLLocationManagerDelegate {
                     print("check 😁 unknown")
                   result("unknown")
               }
+    }
+    
+    private func start(){
+        self.manager.startUpdatingLocation()
+    }
+    
+    public func stop(){
+        self.manager.stopUpdatingLocation()
     }
     
 }

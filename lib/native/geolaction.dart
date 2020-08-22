@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
+import 'package:get/state_manager.dart';
 
 enum PermissionStatus {
   unknown,
@@ -14,6 +17,20 @@ class Geolocation {
   PermissionStatus _status = PermissionStatus.unknown;
 
   final _channel = MethodChannel("app.meedu/geolocation");
+  final _event = EventChannel("app.meedu/geolocation-listener");
+  StreamSubscription _subscription;
+  RxString _location = "".obs;
+  RxString get location => _location;
+
+  void init() {
+    _subscription = _event.receiveBroadcastStream().listen((event) {
+      _location.value = "${event['lat']},${event['lng']}";
+    });
+  }
+
+  dispose() {
+    _subscription?.cancel();
+  }
 
   Future<PermissionStatus> checkPermission() async {
     final String result = await this._channel.invokeMethod<String>('check');
@@ -27,9 +44,13 @@ class Geolocation {
     return this._getStatus(result);
   }
 
-  start() async {}
+  Future<void> start() async {
+    await _channel.invokeMethod("start");
+  }
 
-  stop() {}
+  Future<void> stop() async {
+    await _channel.invokeMethod("stop");
+  }
 
   PermissionStatus _getStatus(String result) {
     switch (result) {

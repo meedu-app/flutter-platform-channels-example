@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:platform_channels_demo/native/geolaction.dart';
 import 'package:platform_channels_demo/pages/home_page.dart';
 import 'package:platform_channels_demo/pages/request_page.dart';
 import 'package:platform_channels_demo/pages/splash_page.dart';
@@ -19,6 +20,13 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: SplashPage(),
+      onInit: () {
+        Geolocation.instance.init();
+      },
+      onDispose: () {
+        print(" Geolocation.instance.dispose();");
+        Geolocation.instance.dispose();
+      },
       routes: {
         'home': (_) => HomePage(),
         'request': (_) => RequestPage(),
