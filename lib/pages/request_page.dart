@@ -13,11 +13,23 @@ class RequestPage extends StatelessWidget {
           width: double.infinity,
           height: double.infinity,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(""),
+              Text(
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10),
               CupertinoButton(
-                child: Text("ALLOW"),
-                onPressed: () {},
+                child: Text(
+                  "ALLOW",
+                  style: TextStyle(
+                    letterSpacing: 1,
+                  ),
+                ),
+                color: Colors.redAccent,
+                borderRadius: BorderRadius.circular(30),
+                onPressed: _.request,
               )
             ],
           ),

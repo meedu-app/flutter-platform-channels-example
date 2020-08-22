@@ -18,8 +18,10 @@ public class MainActivity extends FlutterActivity {
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
+      
         BinaryMessenger messenger = flutterEngine.getDartExecutor().getBinaryMessenger();
         MethodChannel methodChannel = new MethodChannel(messenger, "app.meedu/my_first_platform_channel");
+        new Geolocation(this, messenger);
         methodChannel.setMethodCallHandler((MethodCall call, MethodChannel.Result result) -> {
             if (call.method.equals("version")) {
 //                int number = (int) call.arguments;

@@ -12,6 +12,8 @@ import Flutter
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
         let methodChannel = FlutterMethodChannel(name: "app.meedu/my_first_platform_channel", binaryMessenger: controller.binaryMessenger)
         
+        Geolocation(messenger: controller.binaryMessenger)
+        
         methodChannel.setMethodCallHandler({(call: FlutterMethodCall, result: FlutterResult)-> Void in
             if call.method == "version" {
                 //let numbers: [Int] = call.arguments as! [Int]

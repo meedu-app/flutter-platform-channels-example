@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:platform_channels_demo/pages/home_page.dart';
+import 'package:platform_channels_demo/pages/request_page.dart';
+import 'package:platform_channels_demo/pages/splash_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +18,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: SplashPage(),
+      routes: {
+        'home': (_) => HomePage(),
+        'request': (_) => RequestPage(),
+      },
     );
   }
 }
